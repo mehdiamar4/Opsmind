@@ -39,6 +39,26 @@ To see the current revision, use `alembic current`. To reverse the initial schem
 
 `DATABASE_URL` must be set in the environment for Alembic and for code that imports the database module. Keep real credentials in your local `.env`; do not commit that file.
 
+## Chat endpoint
+
+Set `OPENAI_API_KEY` to an API key for your OpenAI project and `OPENAI_MODEL` to a model available to that project. The example `.env` uses `gpt-6-luna`; replace its API key placeholder with your own key. The application does not load `.env` automatically, so source it in the shell using the commands above.
+
+Apply the usage-event migration from the `backend/` directory:
+
+```bash
+alembic upgrade head
+```
+
+Send a request to `/chat`:
+
+```bash
+curl -X POST http://127.0.0.1:8000/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"message":"How should I prepare for a team handoff?"}'
+```
+
+The response contains an answer and the model used. Raw input/output token counts, latency, success status, and a database-generated timestamp are recorded in `ai_usage_events`. Provider failures return a generic `502`; missing LLM configuration returns `503`.
+
 ## Check the endpoints
 
 In another terminal, run:

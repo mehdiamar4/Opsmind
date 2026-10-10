@@ -1,6 +1,20 @@
 from datetime import datetime
+from decimal import Decimal
+from typing import Optional
 
-from sqlalchemy import BigInteger, CheckConstraint, DateTime, ForeignKey, Identity, Index, String, func
+from sqlalchemy import (
+    BigInteger,
+    Boolean,
+    CheckConstraint,
+    DateTime,
+    ForeignKey,
+    Identity,
+    Index,
+    Integer,
+    Numeric,
+    String,
+    func,
+)
 from sqlalchemy.orm import Mapped, mapped_column
 
 from app.database import Base
@@ -32,6 +46,21 @@ class Document(Base):
         ForeignKey("users.id", name="fk_documents_uploaded_by_users", ondelete="RESTRICT"),
         nullable=False,
     )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class AIUsageEvent(Base):
+    __tablename__ = "ai_usage_events"
+
+    id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    model: Mapped[str] = mapped_column(String(255), nullable=False)
+    input_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
+    output_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
+    latency_ms: Mapped[int] = mapped_column(Integer, nullable=False)
+    request_success: Mapped[bool] = mapped_column(Boolean, nullable=False)
+    estimated_cost: Mapped[Optional[Decimal]] = mapped_column(Numeric(12, 8), nullable=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

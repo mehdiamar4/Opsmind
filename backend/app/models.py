@@ -13,9 +13,12 @@ from sqlalchemy import (
     Integer,
     Numeric,
     String,
+    Text,
+    UniqueConstraint,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
+from pgvector.sqlalchemy import Vector
 
 from app.database import Base
 
@@ -36,7 +39,14 @@ class User(Base):
 
 class Document(Base):
     __tablename__ = "documents"
-    __table_args__ = (Index("ix_documents_uploaded_by", "uploaded_by"),)
+    __table_args__ = (
+        Index("ix_documents_uploaded_by", "uploaded_by"),
+        UniqueConstraint("content_hash", name="uq_documents_content_hash"),
+        CheckConstraint(
+            "status IN ('pending', 'processing', 'ready', 'failed')",
+            name="ck_documents_status",
+        ),
+    )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
     filename: Mapped[str] = mapped_column(String, nullable=False)
@@ -46,6 +56,28 @@ class Document(Base):
         ForeignKey("users.id", name="fk_documents_uploaded_by_users", ondelete="RESTRICT"),
         nullable=False,
     )
+    content_hash: Mapped[Optional[str]] = mapped_column(String(64), nullable=True)
+    status: Mapped[str] = mapped_column(
+        String(20), nullable=False, server_default="pending"
+    )
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), nullable=False, server_default=func.now()
+    )
+
+
+class DocumentChunk(Base):
+    __tablename__ = "document_chunks"
+
+    document_id: Mapped[int] = mapped_column(
+        BigInteger,
+        ForeignKey("documents.id", name="fk_document_chunks_document_id_documents", ondelete="CASCADE"),
+        primary_key=True,
+    )
+    chunk_index: Mapped[int] = mapped_column(Integer, primary_key=True)
+    content: Mapped[str] = mapped_column(Text, nullable=False)
+    page_number: Mapped[int] = mapped_column(Integer, nullable=False)
+    section_title: Mapped[Optional[str]] = mapped_column(Text, nullable=True)
+    embedding: Mapped[list[float]] = mapped_column(Vector(1536), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), nullable=False, server_default=func.now()
     )

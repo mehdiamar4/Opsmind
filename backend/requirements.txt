@@ -4,3 +4,7 @@ SQLAlchemy>=2.0,<3.0
 psycopg[binary]>=3.2,<4.0
 alembic>=1.13,<2.0
 openai>=1.68,<3.0
+pgvector>=0.4,<1.0
+pypdf>=5,<7
+python-multipart>=0.0.20,<1.0
+tiktoken>=0.8,<1.0

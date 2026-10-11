@@ -31,6 +31,8 @@ createdb opsmind --owner=opsmind
 
 For the example URL in `.env.example`, set the role password to `opsmind`, or change the URL to match the password you choose. Copy and source the file as shown above, then run the initial migration from the `backend/` directory:
 
+Before migrating, install the pgvector PostgreSQL server extension for your PostgreSQL distribution. On Homebrew PostgreSQL, use `brew install pgvector`. The `opsmind` application role may not have permission to install extensions; if it is not a PostgreSQL superuser, connect as a database admin and run `CREATE EXTENSION IF NOT EXISTS vector` in the `opsmind` database first. The Alembic migration also runs this statement when it has permission.
+
 ```bash
 alembic upgrade head
 ```
@@ -58,6 +60,35 @@ curl -X POST http://127.0.0.1:8000/chat \
 ```
 
 The response contains an answer and the model used. Raw input/output token counts, latency, success status, and a database-generated timestamp are recorded in `ai_usage_events`. Provider failures return a generic `502`; missing LLM configuration returns `503`.
+
+## PDF document ingestion
+
+The Python `pgvector` dependency provides SQLAlchemy support; the PostgreSQL server extension provides the `vector` type used by document chunks.
+
+Set `OPENAI_EMBEDDING_MODEL` in `.env` to an OpenAI `text-embedding-3` model. The default is `text-embedding-3-small`; OpsMind requests 1536 dimensions to match the `vector(1536)` column. Embedding calls occur only when a document is uploaded. Tests mock those calls.
+
+Run or upgrade the database schema from `backend/`:
+
+```bash
+alembic upgrade head
+```
+
+Upload a PDF with a `multipart/form-data` request. Use `uploaded_by` for an existing `users.id` and attach the file under `file`:
+
+```bash
+curl -X POST http://127.0.0.1:8000/documents \
+  -F 'uploaded_by=1' \
+  -F 'file=@./example.pdf;type=application/pdf'
+```
+
+The endpoint rejects empty or invalid PDFs, unknown users, and duplicate SHA-256 content. It extracts text from each page without OCR, groups paragraphs under detected headings, and splits chunks to at most 800 `cl100k_base` tokens. It sends chunks to the configured embedding model in batches of up to 64 and stores the document and chunks in one transaction. The original PDF is not retained; a document becomes `ready` only after all chunks and vectors are stored.
+
+To run the automated tests, install the development requirements and run pytest:
+
+```bash
+python -m pip install -r requirements-dev.txt
+python -m pytest
+```
 
 ## Check the endpoints
 

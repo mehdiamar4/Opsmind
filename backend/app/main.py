@@ -6,9 +6,11 @@ from pydantic import BaseModel, Field
 
 from app.llm import LLMConfigurationError, LLMResult, generate_reply
 from app.routes.documents import router as documents_router
+from app.routes.rag import router as rag_router
 
 app = FastAPI(title="OpsMind API", version="0.1.0")
 app.include_router(documents_router)
+app.include_router(rag_router)
 
 
 class ChatRequest(BaseModel):

@@ -1,6 +1,6 @@
 # OpsMind Backend
 
-Minimal FastAPI backend for OpsMind.
+FastAPI backend for PDF ingestion, baseline chat, and document-grounded RAG chat.
 
 ## Set up and run locally
 
@@ -81,7 +81,21 @@ curl -X POST http://127.0.0.1:8000/documents \
   -F 'file=@./example.pdf;type=application/pdf'
 ```
 
-The endpoint rejects empty or invalid PDFs, unknown users, and duplicate SHA-256 content. It extracts text from each page without OCR, groups paragraphs under detected headings, and splits chunks to at most 800 `cl100k_base` tokens. It sends chunks to the configured embedding model in batches of up to 64 and stores the document and chunks in one transaction. The original PDF is not retained; a document becomes `ready` only after all chunks and vectors are stored.
+The endpoint rejects empty or invalid PDFs, unknown users, and duplicate SHA-256 content. It extracts text from each page without OCR, groups paragraphs under detected headings, and splits chunks to at most 800 `cl100k_base` tokens. Oversized blocks have a 75-token overlap between splits. It sends chunks to the configured embedding model in batches of up to 64 and stores the document and chunks in one transaction. The original PDF is not retained; a document becomes `ready` only after all chunks and vectors are stored.
+
+## RAG chat endpoint
+
+Upload a PDF first and use its returned `document_id` to ask about that document:
+
+```bash
+curl -X POST http://127.0.0.1:8000/rag/chat \
+  -H 'Content-Type: application/json' \
+  -d '{"question":"What does the document say about access rules?","document_id":1}'
+```
+
+`document_id` is optional. With it, retrieval searches only that ready document; without it, retrieval searches all ready documents. The endpoint embeds the question using the same configured embedding model used for document chunks, then retrieves the five nearest chunks by pgvector cosine distance. There is no similarity cutoff or vector index yet.
+
+The response contains `answer` and a `sources` list with database-derived `document_id`, `filename`, `page_number`, `section_title`, `chunk_index`, and `distance`. The answer is instructed to cite source numbers such as `[1]`; these numbers refer to the order of the returned sources. If no chunks are found, the endpoint returns an insufficient-evidence answer with an empty `sources` list. The question and retrieved chunk text are sent to the configured OpenAI API when an answer is generated.
 
 To run the automated tests, install the development requirements and run pytest:
 

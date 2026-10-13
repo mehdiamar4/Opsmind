@@ -14,6 +14,8 @@ OpsMind is an early backend prototype for an AI knowledge assistant. It ingests 
 
 The RAG endpoint searches the five closest chunks from ready documents. A request can include `document_id` to restrict retrieval to one uploaded PDF; without it, retrieval searches all ready documents. Source metadata comes from PostgreSQL, and the answer uses numbered citations such as `[1]`.
 
+An [evaluation runner](backend/README.md#retrieval-evaluation) reports Recall@1, Recall@5, Section@1, and simple FactMatch scores, with an optional semantic OpenAI judge. The committed cases target the local evaluation PDFs and their document IDs; update those IDs when using a different database.
+
 ## Stack and scope
 
 Python, FastAPI, synchronous SQLAlchemy 2.x, PostgreSQL with pgvector, Alembic, and the OpenAI SDK. This is a local development prototype; authentication and production deployment are not implemented yet.

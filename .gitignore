@@ -19,6 +19,7 @@ env/
 .ruff_cache/
 .coverage
 htmlcov/
+backend/evals/results.json
 
 # Build artifacts
 build/

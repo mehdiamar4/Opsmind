@@ -97,6 +97,24 @@ curl -X POST http://127.0.0.1:8000/rag/chat \
 
 The response contains `answer` and a `sources` list with database-derived `document_id`, `filename`, `page_number`, `section_title`, `chunk_index`, and `distance`. The answer is instructed to cite source numbers such as `[1]`; these numbers refer to the order of the returned sources. If no chunks are found, the endpoint returns an insufficient-evidence answer with an empty `sources` list. The question and retrieved chunk text are sent to the configured OpenAI API when an answer is generated.
 
+## Retrieval evaluation
+
+`evals/questions.json` contains fictional example cases. Replace the sample document IDs, questions, expected facts, and section titles with cases for PDFs in your own database before calculating a meaningful score. Each case needs an `id`, `question`, `expected_document_id`, `expected_fact`, `expected_section`, and `category`.
+
+From `backend/`, with `.env` sourced and the database available, run:
+
+```bash
+python -m evals.run --questions evals/questions.json --output evals/results.json
+```
+
+Add `--llm-judge` to make one additional OpenAI grading call per case:
+
+```bash
+python -m evals.run --questions evals/questions.json --output evals/results.json --llm-judge
+```
+
+For each case, the script runs the existing RAG answer flow, prints per-question Recall@1, Recall@5, Section@1, and FactMatch results, and saves ranked source details plus the generated answer to `evals/results.json`. Recall@1 is the fraction of questions whose expected document is the first result; Recall@5 is the fraction where it appears among the five closest chunks; Section@1 is the fraction whose first result has the expected section title. FactMatch is the fraction of generated answers containing the expected fact after lowercasing and normalizing punctuation and whitespace. The optional `--llm-judge` receives the question, expected fact, answer, and retrieved chunk text with source metadata. It accepts supported extra details and paraphrases, but marks unsupported or contradictory material claims and missing required facts incorrect. It reports LLMJudge accuracy and saves each `correct` result with a short reason. Running the script makes embedding and answer-generation API calls; the optional judge adds one grading call per case. The automated tests mock embeddings, retrieval, answer generation, and judge results.
+
 To run the automated tests, install the development requirements and run pytest:
 
 ```bash

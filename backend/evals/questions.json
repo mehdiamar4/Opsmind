@@ -1,0 +1,82 @@
+[
+  {
+    "id": "hr-vacation-days",
+    "question": "How many paid vacation days do full-time employees receive per year?",
+    "expected_document_id": 3,
+    "expected_fact": "30 paid vacation days per calendar year",
+    "category": "factual",
+    "expected_section": "2. Annual Leave"
+  },
+  {
+    "id": "hr-security-training",
+    "question": "How soon must new employees complete security awareness training?",
+    "expected_document_id": 3,
+    "expected_fact": "Within the first 7 calendar days",
+    "category": "factual",
+    "expected_section": "4. Onboarding"
+  },
+  {
+    "id": "hr-probation",
+    "question": "What is the standard probation period?",
+    "expected_document_id": 3,
+    "expected_fact": "Six months",
+    "category": "factual",
+    "expected_section": "5. Probation and Notice"
+  },
+  {
+    "id": "it-p1-response",
+    "question": "What is the target acknowledgement time for a P1 incident?",
+    "expected_document_id": 4,
+    "expected_fact": "10 minutes",
+    "category": "factual",
+    "expected_section": "2. Initial Response Targets"
+  },
+  {
+    "id": "it-error-e47",
+    "question": "What is the most common cause of error E47?",
+    "expected_document_id": 4,
+    "expected_fact": "Blocked airflow around the rear cooling intake",
+    "category": "factual",
+    "expected_section": "4. Error E47 - Cooling Failure"
+  },
+  {
+    "id": "it-p1-updates",
+    "question": "How often must the status channel be updated during a P1 incident?",
+    "expected_document_id": 4,
+    "expected_fact": "At least every 30 minutes",
+    "category": "factual",
+    "expected_section": "5. Communication"
+  },
+  {
+    "id": "finance-hotel-limit",
+    "question": "What is the standard hotel guideline for domestic travel in Germany?",
+    "expected_document_id": 5,
+    "expected_fact": "Up to EUR 160 per night excluding breakfast",
+    "category": "factual",
+    "expected_section": "3. Hotels"
+  },
+  {
+    "id": "finance-receipt",
+    "question": "From what amount is a receipt required for an individual expense?",
+    "expected_document_id": 5,
+    "expected_fact": "EUR 25 or more",
+    "category": "factual",
+    "expected_section": "5. Receipts and Approval"
+  },
+  {
+    "id": "cloud-cutover",
+    "question": "What is the preferred production cutover window for low-weekend-usage applications?",
+    "expected_document_id": 6,
+    "expected_fact": "Saturday between 22:00 and 02:00 local time",
+    "category": "factual",
+    "expected_section": "4. Production Cutover"
+  },
+  {
+    "id": "cloud-rollback",
+    "question": "When should rollback be initiated if a critical business function is unavailable?",
+    "expected_document_id": 6,
+    "expected_fact": "If it is unavailable for more than 20 minutes and no safe workaround exists",
+    "category": "factual",
+    "expected_section": "5. Rollback Criteria"
+  }
+]

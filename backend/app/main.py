@@ -5,6 +5,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from app.llm import LLMConfigurationError, LLMResult, generate_reply
+from app.pricing import estimate_cost
 from app.routes.documents import router as documents_router
 from app.routes.rag import router as rag_router
 
@@ -43,6 +44,13 @@ def _record_usage(
                     output_tokens=output_tokens,
                     latency_ms=latency_ms,
                     request_success=request_success,
+                    estimated_cost=estimate_cost(
+                        event_type="llm",
+                        model=model,
+                        input_tokens=input_tokens,
+                        output_tokens=output_tokens,
+                        request_success=request_success,
+                    ),
                 )
             )
             session.commit()

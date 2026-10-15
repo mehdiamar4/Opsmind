@@ -1,5 +1,6 @@
 import os
-from typing import Sequence
+from time import perf_counter
+from typing import Callable, Optional, Sequence
 
 from openai import OpenAI
 
@@ -13,7 +14,9 @@ class EmbeddingConfigurationError(Exception):
     pass
 
 
-def create_embeddings(texts: Sequence[str]) -> list[list[float]]:
+def create_embeddings(
+    texts: Sequence[str], *, on_usage: Optional[Callable[..., None]] = None
+) -> list[list[float]]:
     if not texts:
         return []
 
@@ -28,17 +31,42 @@ def create_embeddings(texts: Sequence[str]) -> list[list[float]]:
     embeddings: list[list[float]] = []
     for start in range(0, len(texts), EMBEDDING_BATCH_SIZE):
         batch = list(texts[start : start + EMBEDDING_BATCH_SIZE])
-        response = client.embeddings.create(
-            model=model,
-            input=batch,
-            dimensions=EMBEDDING_DIMENSIONS,
-            encoding_format="float",
-        )
-        batch_embeddings = sorted(response.data, key=lambda item: item.index)
-        if len(batch_embeddings) != len(batch):
-            raise RuntimeError("Embedding response did not match the input batch")
-        for item in batch_embeddings:
-            if len(item.embedding) != EMBEDDING_DIMENSIONS:
-                raise RuntimeError("Embedding response had an unexpected dimension")
-            embeddings.append(item.embedding)
+        started_at = perf_counter()
+        response = None
+        try:
+            response = client.embeddings.create(
+                model=model,
+                input=batch,
+                dimensions=EMBEDDING_DIMENSIONS,
+                encoding_format="float",
+            )
+            batch_embeddings = sorted(response.data, key=lambda item: item.index)
+            if len(batch_embeddings) != len(batch):
+                raise RuntimeError("Embedding response did not match the input batch")
+            for item in batch_embeddings:
+                if len(item.embedding) != EMBEDDING_DIMENSIONS:
+                    raise RuntimeError("Embedding response had an unexpected dimension")
+        except Exception:
+            if on_usage is not None:
+                usage = getattr(response, "usage", None)
+                on_usage(
+                    event_type="embedding",
+                    model=getattr(response, "model", None) or model,
+                    input_tokens=getattr(usage, "prompt_tokens", 0) or 0,
+                    output_tokens=0,
+                    latency_ms=int((perf_counter() - started_at) * 1000),
+                    request_success=False,
+                )
+            raise
+        if on_usage is not None:
+            usage = getattr(response, "usage", None)
+            on_usage(
+                event_type="embedding",
+                model=getattr(response, "model", None) or model,
+                input_tokens=getattr(usage, "prompt_tokens", 0) or 0,
+                output_tokens=0,
+                latency_ms=int((perf_counter() - started_at) * 1000),
+                request_success=True,
+            )
+        embeddings.extend(item.embedding for item in batch_embeddings)
     return embeddings

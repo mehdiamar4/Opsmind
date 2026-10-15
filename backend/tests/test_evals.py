@@ -4,6 +4,7 @@ from typing import Optional
 import pytest
 
 from app.embeddings import EMBEDDING_DIMENSIONS
+from app.rag import RAGResult
 from app.retrieval import RetrievedChunk
 from evals import run as eval_run
 from evals.run import DEFAULT_QUESTIONS, evaluate_cases, load_cases, save_report
@@ -121,6 +122,10 @@ def test_recall_at_five_and_json_output(tmp_path) -> None:
     save_report(report, output)
 
     assert report["metric"] == "Recall@5"
+    assert report["top_k"] == 5
+    assert report["recall_at_k"] == pytest.approx(2 / 3)
+    assert report["average_rag_latency_ms"] >= 0
+    assert report["average_estimated_ai_cost_per_request"] is None
     assert (report["hits_at_1"], report["recall_at_1"]) == (1, pytest.approx(1 / 3))
     assert (report["hits"], report["total"]) == (2, 3)
     assert report["recall_at_5"] == pytest.approx(2 / 3)
@@ -132,6 +137,94 @@ def test_recall_at_five_and_json_output(tmp_path) -> None:
     assert report["results"][0]["expected_fact"] == "An example fact"
     assert report["results"][0]["answer"] == "an example fact."
     assert report["results"][1]["fact_match"] is False
+
+
+@pytest.mark.parametrize("top_k, expected_hit", [(3, False), (5, True), (10, True)])
+def test_top_k_controls_retrieval_and_recall(top_k, expected_hit) -> None:
+    seen_limits = []
+
+    def retriever(vector, *, top_k):
+        seen_limits.append(top_k)
+        return [chunk(1), chunk(1), chunk(1), chunk(9)] * 3
+
+    report = evaluate_cases(
+        [case("depth", 9)],
+        top_k=top_k,
+        embedder=embed,
+        retriever=retriever,
+        answerer=answer,
+    )
+
+    assert seen_limits == [top_k]
+    assert report["top_k"] == top_k
+    assert report["metric"] == f"Recall@{top_k}"
+    assert report["recall_at_k"] == float(expected_hit)
+    assert len(report["results"][0]["retrieved_sources"]) == top_k
+
+
+def test_rag_latency_and_usage_cost_per_request_exclude_judge(monkeypatch) -> None:
+    clock = iter([1.0, 1.2, 2.0, 2.4])
+    monkeypatch.setattr(eval_run, "perf_counter", lambda: next(clock))
+    persisted = []
+
+    def fake_answer_flow(question, *, usage_recorder, **kwargs):
+        usage_recorder(
+            event_type="embedding",
+            model="text-embedding-3-small",
+            input_tokens=100,
+            output_tokens=0,
+            latency_ms=10,
+            request_success=True,
+        )
+        usage_recorder(
+            event_type="llm",
+            model="gpt-6-luna",
+            input_tokens=100,
+            output_tokens=20,
+            latency_ms=50,
+            request_success=True,
+        )
+        return RAGResult(answer="An example fact", sources=[chunk(1)])
+
+    report = evaluate_cases(
+        [case("first", 1), case("second", 1)],
+        answer_flow=fake_answer_flow,
+        usage_persister=lambda **event: persisted.append(event),
+        judge=lambda *args: {"correct": True, "reason": "Supported."},
+    )
+
+    assert report["average_rag_latency_ms"] == pytest.approx(300)
+    assert report["average_estimated_ai_cost_per_request"] == pytest.approx(0.000022)
+    assert [item["estimated_ai_cost"] for item in report["results"]] == [
+        0.000022,
+        0.000022,
+    ]
+    assert len(persisted) == 4
+    assert persisted[0]["request_id"] == persisted[1]["request_id"]
+    assert persisted[2]["request_id"] == persisted[3]["request_id"]
+    assert persisted[0]["request_id"] != persisted[2]["request_id"]
+    assert report["llm_judge_accuracy"] == 1.0
+
+
+def test_unknown_usage_price_keeps_average_cost_null() -> None:
+    def fake_answer_flow(question, *, usage_recorder, **kwargs):
+        usage_recorder(
+            event_type="llm",
+            model="unknown-model",
+            input_tokens=100,
+            output_tokens=20,
+            latency_ms=50,
+            request_success=True,
+        )
+        return RAGResult(answer="An example fact", sources=[chunk(1)])
+
+    report = evaluate_cases(
+        [case("unknown-price", 1)],
+        answer_flow=fake_answer_flow,
+        usage_persister=lambda **event: None,
+    )
+    assert report["results"][0]["estimated_ai_cost"] is None
+    assert report["average_estimated_ai_cost_per_request"] is None
 
 
 def test_fact_match_normalizes_case_punctuation_and_whitespace() -> None:
@@ -284,11 +377,12 @@ def test_cli_prints_results_and_saves_json(tmp_path, monkeypatch, capsys) -> Non
         ],
     )
 
-    def mocked_evaluation(cases, *, judge=None):
+    def mocked_evaluation(cases, *, top_k=5, judge=None):
         expected_facts = {case["question"]: case["expected_fact"] for case in cases}
         case_indices = {case["question"]: index for index, case in enumerate(cases)}
         return evaluate_cases(
             cases,
+            top_k=top_k,
             embedder=lambda texts: [
                 [float(case_indices[texts[0]])]
                 + [0.0] * (EMBEDDING_DIMENSIONS - 1)
@@ -321,10 +415,35 @@ def test_cli_prints_results_and_saves_json(tmp_path, monkeypatch, capsys) -> Non
     assert "Section@1: 10/10 (100.0%)" in printed
     assert "FactMatch: 10/10 (100.0%)" in printed
     assert "LLMJudge accuracy: 10/10 (100.0%)" in printed
+    assert "Average RAG latency:" in printed
+    assert "Average estimated AI cost/request: unavailable" in printed
     saved_report = json.loads(output.read_text(encoding="utf-8"))
     assert saved_report["hits_at_1"] == 10
+    assert saved_report["top_k"] == 5
     assert saved_report["hits"] == 10
     assert saved_report["section_hits_at_1"] == 10
     assert saved_report["fact_matches"] == 10
     assert saved_report["llm_judge_correct"] == 10
     assert saved_report["results"][0]["llm_judge"]["reason"] == "Mocked semantic match."
+
+
+def test_cli_uses_requested_top_k(tmp_path, monkeypatch, capsys) -> None:
+    output = tmp_path / "results.json"
+    monkeypatch.setattr(
+        "sys.argv", ["evals.run", "--top-k", "3", "--output", str(output)]
+    )
+
+    def mocked_evaluation(cases, *, top_k, judge):
+        return evaluate_cases(
+            [cases[0]],
+            top_k=top_k,
+            embedder=embed,
+            retriever=lambda vector, *, top_k: [chunk(3)],
+            answerer=answer,
+        )
+
+    monkeypatch.setattr(eval_run, "evaluate_cases", mocked_evaluation)
+    eval_run.main()
+
+    assert "Recall@3:" in capsys.readouterr().out
+    assert json.loads(output.read_text(encoding="utf-8"))["top_k"] == 3

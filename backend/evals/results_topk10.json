@@ -1,0 +1,1139 @@
+{
+  "top_k": 10,
+  "metric": "Recall@10",
+  "recall_at_1": 1.0,
+  "recall_at_k": 1.0,
+  "section_at_1": 1.0,
+  "fact_match": 0.9,
+  "average_rag_latency_ms": 1770.0031,
+  "average_estimated_ai_cost_per_request": 0.000121792,
+  "hits_at_1": 10,
+  "hits": 10,
+  "section_hits_at_1": 10,
+  "fact_matches": 9,
+  "total": 10,
+  "results": [
+    {
+      "id": "hr-vacation-days",
+      "question": "How many paid vacation days do full-time employees receive per year?",
+      "expected_document_id": 3,
+      "expected_fact": "30 paid vacation days per calendar year",
+      "category": "factual",
+      "expected_section": "2. Annual Leave",
+      "answer": "Full-time employees receive **30 paid vacation days per calendar year**. [1]",
+      "request_id": "c34c4a3d-28b3-496e-8a15-2d62bbf044d6",
+      "rag_latency_ms": 2311.412208,
+      "estimated_ai_cost": 0.00011256,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Annual Leave",
+          "chunk_index": 3,
+          "distance": 0.2864673425052091
+        },
+        {
+          "rank": 2,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "6. Items Not Covered",
+          "chunk_index": 7,
+          "distance": 0.6573692525031908
+        },
+        {
+          "rank": 3,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. Purpose",
+          "chunk_index": 2,
+          "distance": 0.674000595620585
+        },
+        {
+          "rank": 4,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Sick Leave",
+          "chunk_index": 4,
+          "distance": 0.6749022023662654
+        },
+        {
+          "rank": 5,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - HR Leave and Onboarding",
+          "chunk_index": 0,
+          "distance": 0.7052403575319646
+        },
+        {
+          "rank": 6,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - Travel and Expense Policy",
+          "chunk_index": 0,
+          "distance": 0.7126344108804693
+        },
+        {
+          "rank": 7,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "6. Not Included",
+          "chunk_index": 6,
+          "distance": 0.7143665905203378
+        },
+        {
+          "rank": 8,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Probation and Notice",
+          "chunk_index": 6,
+          "distance": 0.7207528290739624
+        },
+        {
+          "rank": 9,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Meals",
+          "chunk_index": 4,
+          "distance": 0.7217213435804579
+        },
+        {
+          "rank": 10,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. General Principles",
+          "chunk_index": 1,
+          "distance": 0.7290906948042917
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer states 30 paid vacation days per calendar year, matching the policy and expected fact."
+      }
+    },
+    {
+      "id": "hr-security-training",
+      "question": "How soon must new employees complete security awareness training?",
+      "expected_document_id": 3,
+      "expected_fact": "Within the first 7 calendar days",
+      "category": "factual",
+      "expected_section": "4. Onboarding",
+      "answer": "New employees must complete security awareness training within the first 7 calendar days. [1]",
+      "request_id": "6ae277b9-ced4-4942-88a4-295c4b3381b9",
+      "rag_latency_ms": 1319.4912500000005,
+      "estimated_ai_cost": 0.0001142,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Onboarding",
+          "chunk_index": 5,
+          "distance": 0.35101827173166644
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.6343788545955711
+        },
+        {
+          "rank": 3,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - HR Leave and Onboarding",
+          "chunk_index": 0,
+          "distance": 0.6521041772007417
+        },
+        {
+          "rank": 4,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Sick Leave",
+          "chunk_index": 4,
+          "distance": 0.6754265556165291
+        },
+        {
+          "rank": 5,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. General Principles",
+          "chunk_index": 1,
+          "distance": 0.6885634307920467
+        },
+        {
+          "rank": 6,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. Purpose",
+          "chunk_index": 2,
+          "distance": 0.7067286291769841
+        },
+        {
+          "rank": 7,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.710387192980297
+        },
+        {
+          "rank": 8,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - IT Operations Incident Manual",
+          "chunk_index": 0,
+          "distance": 0.7122446882870694
+        },
+        {
+          "rank": 9,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.7192145889188277
+        },
+        {
+          "rank": 10,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Probation and Notice",
+          "chunk_index": 6,
+          "distance": 0.720173821452136
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer correctly states that security awareness training must be completed within the first 7 calendar days, as supported by the onboarding policy."
+      }
+    },
+    {
+      "id": "hr-probation",
+      "question": "What is the standard probation period?",
+      "expected_document_id": 3,
+      "expected_fact": "Six months",
+      "category": "factual",
+      "expected_section": "5. Probation and Notice",
+      "answer": "The standard probation period is six months. [1]",
+      "request_id": "6ddea316-852c-4561-9246-7a8a99a630b6",
+      "rag_latency_ms": 1570.281916999999,
+      "estimated_ai_cost": 0.00014254,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Probation and Notice",
+          "chunk_index": 6,
+          "distance": 0.2740566104107486
+        },
+        {
+          "rank": 2,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. Purpose",
+          "chunk_index": 2,
+          "distance": 0.6724528518957404
+        },
+        {
+          "rank": 3,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Onboarding",
+          "chunk_index": 5,
+          "distance": 0.7426945096604809
+        },
+        {
+          "rank": 4,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Annual Leave",
+          "chunk_index": 3,
+          "distance": 0.759688844485237
+        },
+        {
+          "rank": 5,
+          "document_id": 2,
+          "filename": "Anschreiben_Vodafone_IoT.pdf",
+          "page_number": 1,
+          "section_title": "40549 Düsseldorf",
+          "chunk_index": 4,
+          "distance": 0.76911742414424
+        },
+        {
+          "rank": 6,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - HR Leave and Onboarding",
+          "chunk_index": 0,
+          "distance": 0.7748557761397488
+        },
+        {
+          "rank": 7,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Policy",
+          "chunk_index": 1,
+          "distance": 0.7752905936428341
+        },
+        {
+          "rank": 8,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.7835576912522886
+        },
+        {
+          "rank": 9,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Incident Review",
+          "chunk_index": 6,
+          "distance": 0.7862756150229411
+        },
+        {
+          "rank": 10,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.7918655740487711
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer states six months, matching the expected fact and the retrieved policy."
+      }
+    },
+    {
+      "id": "it-p1-response",
+      "question": "What is the target acknowledgement time for a P1 incident?",
+      "expected_document_id": 4,
+      "expected_fact": "10 minutes",
+      "category": "factual",
+      "expected_section": "2. Initial Response Targets",
+      "answer": "The target acknowledgement time for a P1 incident is **10 minutes**. [1]",
+      "request_id": "33ea5d30-51b4-4e47-a29c-0aa4246f834a",
+      "rag_latency_ms": 2512.412417000002,
+      "estimated_ai_cost": 0.00012124,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.21770898080212953
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.45759418332013624
+        },
+        {
+          "rank": 3,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.4768978383216109
+        },
+        {
+          "rank": 4,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Incident Review",
+          "chunk_index": 6,
+          "distance": 0.5373567360719358
+        },
+        {
+          "rank": 5,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - IT Operations Incident Manual",
+          "chunk_index": 0,
+          "distance": 0.6478417082678987
+        },
+        {
+          "rank": 6,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.6834481474589589
+        },
+        {
+          "rank": 7,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Onboarding",
+          "chunk_index": 5,
+          "distance": 0.7079882039810145
+        },
+        {
+          "rank": 8,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.7160632741870976
+        },
+        {
+          "rank": 9,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.7633253215771902
+        },
+        {
+          "rank": 10,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Sick Leave",
+          "chunk_index": 4,
+          "distance": 0.7656868460530712
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer states 10 minutes, matching the target acknowledgement time for P1 incidents in the retrieved context."
+      }
+    },
+    {
+      "id": "it-error-e47",
+      "question": "What is the most common cause of error E47?",
+      "expected_document_id": 4,
+      "expected_fact": "Blocked airflow around the rear cooling intake",
+      "category": "factual",
+      "expected_section": "4. Error E47 - Cooling Failure",
+      "answer": "The most common cause of error E47 is blocked airflow around the rear cooling intake. [1]",
+      "request_id": "9d9a78ed-b685-49ff-8002-1b071ca4d0de",
+      "rag_latency_ms": 1315.0160829999998,
+      "estimated_ai_cost": 0.00012742,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "4. Error E47 - Cooling Failure",
+          "chunk_index": 4,
+          "distance": 0.37311738341829503
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "3. Database Connection Saturation",
+          "chunk_index": 3,
+          "distance": 0.7107252855028543
+        },
+        {
+          "rank": 3,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.7436727714552749
+        },
+        {
+          "rank": 4,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - IT Operations Incident Manual",
+          "chunk_index": 0,
+          "distance": 0.7475035181537946
+        },
+        {
+          "rank": 5,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Incident Review",
+          "chunk_index": 6,
+          "distance": 0.7742569690993932
+        },
+        {
+          "rank": 6,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.7876779737299595
+        },
+        {
+          "rank": 7,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.78795309672927
+        },
+        {
+          "rank": 8,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.7907205553038397
+        },
+        {
+          "rank": 9,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Receipts and Approval",
+          "chunk_index": 5,
+          "distance": 0.7943554403492825
+        },
+        {
+          "rank": 10,
+          "document_id": 1,
+          "filename": "Anschreiben_engine-productions.pdf",
+          "page_number": 1,
+          "section_title": "Aachen, Deutschland",
+          "chunk_index": 1,
+          "distance": 0.8281389440049542
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer accurately states the context’s most common cause of E47: blocked airflow around the rear cooling intake."
+      }
+    },
+    {
+      "id": "it-p1-updates",
+      "question": "How often must the status channel be updated during a P1 incident?",
+      "expected_document_id": 4,
+      "expected_fact": "At least every 30 minutes",
+      "category": "factual",
+      "expected_section": "5. Communication",
+      "answer": "The status channel must be updated at least every 30 minutes, even when there is no material change. [1]",
+      "request_id": "c8adbcf6-c6fe-489c-bd16-9b387f401a36",
+      "rag_latency_ms": 1335.4563749999998,
+      "estimated_ai_cost": 0.00012018,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.23084260332682105
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.4244249505762735
+        },
+        {
+          "rank": 3,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.44214994131401963
+        },
+        {
+          "rank": 4,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Incident Review",
+          "chunk_index": 6,
+          "distance": 0.450862306509886
+        },
+        {
+          "rank": 5,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - IT Operations Incident Manual",
+          "chunk_index": 0,
+          "distance": 0.6363866534162372
+        },
+        {
+          "rank": 6,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.6925917701330864
+        },
+        {
+          "rank": 7,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.711390390689617
+        },
+        {
+          "rank": 8,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "3. Database Connection Saturation",
+          "chunk_index": 3,
+          "distance": 0.7371918934426631
+        },
+        {
+          "rank": 9,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Policy",
+          "chunk_index": 1,
+          "distance": 0.7460279279388926
+        },
+        {
+          "rank": 10,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.7559631560158516
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer accurately states that P1 status updates are required at least every 30 minutes, including when there is no material change."
+      }
+    },
+    {
+      "id": "finance-hotel-limit",
+      "question": "What is the standard hotel guideline for domestic travel in Germany?",
+      "expected_document_id": 5,
+      "expected_fact": "Up to EUR 160 per night excluding breakfast",
+      "category": "factual",
+      "expected_section": "3. Hotels",
+      "answer": "The standard guideline is up to **EUR 160 per night, excluding breakfast**. Exceptions for high-cost cities or major events may be approved in advance. [1]",
+      "request_id": "291e3236-33fa-48c7-a0ce-dc6d827bd700",
+      "rag_latency_ms": 2057.9136249999974,
+      "estimated_ai_cost": 0.00011554,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Hotels",
+          "chunk_index": 3,
+          "distance": 0.22291425277565802
+        },
+        {
+          "rank": 2,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Travel Booking",
+          "chunk_index": 2,
+          "distance": 0.6639859455323733
+        },
+        {
+          "rank": 3,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - Travel and Expense Policy",
+          "chunk_index": 0,
+          "distance": 0.7181297446733026
+        },
+        {
+          "rank": 4,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Meals",
+          "chunk_index": 4,
+          "distance": 0.737323657096957
+        },
+        {
+          "rank": 5,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. Purpose",
+          "chunk_index": 2,
+          "distance": 0.7395199980056246
+        },
+        {
+          "rank": 6,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Receipts and Approval",
+          "chunk_index": 5,
+          "distance": 0.7551587521826507
+        },
+        {
+          "rank": 7,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. General Principles",
+          "chunk_index": 1,
+          "distance": 0.765284505462658
+        },
+        {
+          "rank": 8,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "6. Items Not Covered",
+          "chunk_index": 7,
+          "distance": 0.776672961352305
+        },
+        {
+          "rank": 9,
+          "document_id": 2,
+          "filename": "Anschreiben_Vodafone_IoT.pdf",
+          "page_number": 1,
+          "section_title": "Vodafone GmbH",
+          "chunk_index": 2,
+          "distance": 0.7787887916682742
+        },
+        {
+          "rank": 10,
+          "document_id": 2,
+          "filename": "Anschreiben_Vodafone_IoT.pdf",
+          "page_number": 1,
+          "section_title": "Aachen, Deutschland",
+          "chunk_index": 1,
+          "distance": 0.799711014411212
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer gives the EUR 160 per night limit excluding breakfast and the context supports the note about exceptions for high-cost cities or major events."
+      }
+    },
+    {
+      "id": "finance-receipt",
+      "question": "From what amount is a receipt required for an individual expense?",
+      "expected_document_id": 5,
+      "expected_fact": "EUR 25 or more",
+      "category": "factual",
+      "expected_section": "5. Receipts and Approval",
+      "answer": "A receipt is required for an individual expense of **EUR 25 or more**. [1]",
+      "request_id": "dd3afaab-e6fc-41c5-bfa2-09eda8f66312",
+      "rag_latency_ms": 1603.3355829999962,
+      "estimated_ai_cost": 0.00011744,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Receipts and Approval",
+          "chunk_index": 5,
+          "distance": 0.3418000969091861
+        },
+        {
+          "rank": 2,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. General Principles",
+          "chunk_index": 1,
+          "distance": 0.5489436070551297
+        },
+        {
+          "rank": 3,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - Travel and Expense Policy",
+          "chunk_index": 0,
+          "distance": 0.6274785822113864
+        },
+        {
+          "rank": 4,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Meals",
+          "chunk_index": 4,
+          "distance": 0.6311420030109345
+        },
+        {
+          "rank": 5,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "6. Not Included",
+          "chunk_index": 6,
+          "distance": 0.7094964753384846
+        },
+        {
+          "rank": 6,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Hotels",
+          "chunk_index": 3,
+          "distance": 0.7199786571659057
+        },
+        {
+          "rank": 7,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "6. Items Not Covered",
+          "chunk_index": 7,
+          "distance": 0.7429112827540689
+        },
+        {
+          "rank": 8,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Travel Booking",
+          "chunk_index": 2,
+          "distance": 0.7708448468716687
+        },
+        {
+          "rank": 9,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Annual Leave",
+          "chunk_index": 3,
+          "distance": 0.7828316431917107
+        },
+        {
+          "rank": 10,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Sick Leave",
+          "chunk_index": 4,
+          "distance": 0.807554589944032
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer gives the supported threshold: a receipt is required for individual expenses of EUR 25 or more."
+      }
+    },
+    {
+      "id": "cloud-cutover",
+      "question": "What is the preferred production cutover window for low-weekend-usage applications?",
+      "expected_document_id": 6,
+      "expected_fact": "Saturday between 22:00 and 02:00 local time",
+      "category": "factual",
+      "expected_section": "4. Production Cutover",
+      "answer": "The preferred cutover window is Saturday between 22:00 and 02:00 local time. [1]",
+      "request_id": "62df3cbf-70ca-49da-95f6-1e243427f96e",
+      "rag_latency_ms": 1721.5867920000037,
+      "estimated_ai_cost": 0.00012304,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.2960894170217636
+        },
+        {
+          "rank": 2,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.5906602968464629
+        },
+        {
+          "rank": 3,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.6360447883562964
+        },
+        {
+          "rank": 4,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "7. Cost and Capacity",
+          "chunk_index": 7,
+          "distance": 0.6606329884987654
+        },
+        {
+          "rank": 5,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "2. Discovery and Dependency Mapping",
+          "chunk_index": 2,
+          "distance": 0.6902030378181514
+        },
+        {
+          "rank": 6,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.6926853840341833
+        },
+        {
+          "rank": 7,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.7024294699484307
+        },
+        {
+          "rank": 8,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "1. Scope",
+          "chunk_index": 1,
+          "distance": 0.7136132533841392
+        },
+        {
+          "rank": 9,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "3. Test Migration",
+          "chunk_index": 3,
+          "distance": 0.72739010623202
+        },
+        {
+          "rank": 10,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.7290710982475161
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer gives the preferred Saturday 22:00–02:00 local-time window, matching the context for low-weekend-usage applications."
+      }
+    },
+    {
+      "id": "cloud-rollback",
+      "question": "When should rollback be initiated if a critical business function is unavailable?",
+      "expected_document_id": 6,
+      "expected_fact": "If it is unavailable for more than 20 minutes and no safe workaround exists",
+      "category": "factual",
+      "expected_section": "5. Rollback Criteria",
+      "answer": "Initiate rollback if a critical business function is unavailable for more than 20 minutes and no safe workaround exists. [1]",
+      "request_id": "c9add4c9-21ee-49b9-a2c5-f5a5bebe9fe9",
+      "rag_latency_ms": 1953.1247500000006,
+      "estimated_ai_cost": 0.00012376,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": false,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.20963008773095604
+        },
+        {
+          "rank": 2,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.542701353513016
+        },
+        {
+          "rank": 3,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.6051126254216402
+        },
+        {
+          "rank": 4,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "3. Database Connection Saturation",
+          "chunk_index": 3,
+          "distance": 0.6066039267831954
+        },
+        {
+          "rank": 5,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "3. Test Migration",
+          "chunk_index": 3,
+          "distance": 0.6167046327701335
+        },
+        {
+          "rank": 6,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.6387641810625777
+        },
+        {
+          "rank": 7,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.6695672237854624
+        },
+        {
+          "rank": 8,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "1. Scope",
+          "chunk_index": 1,
+          "distance": 0.6739434516785937
+        },
+        {
+          "rank": 9,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - IT Operations Incident Manual",
+          "chunk_index": 0,
+          "distance": 0.688978128491947
+        },
+        {
+          "rank": 10,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Incident Review",
+          "chunk_index": 6,
+          "distance": 0.6928015877029012
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "It accurately states that rollback should be initiated when the function is unavailable for more than 20 minutes and no safe workaround exists, as supported by the context."
+      }
+    }
+  ],
+  "llm_judge_correct": 10,
+  "llm_judge_accuracy": 1.0
+}

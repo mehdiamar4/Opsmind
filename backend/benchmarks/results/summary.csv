@@ -1,0 +1,4 @@
+top_k,recall_at_1,recall_at_k,section_at_1,fact_match,llm_judge_accuracy,average_rag_latency_ms,average_estimated_ai_cost_per_request
+3,1.0,1.0,1.0,0.8,1.0,1725.6537625,0.000053582
+5,1.0,1.0,1.0,0.9,1.0,1659.8823541999998,0.000075662
+10,1.0,1.0,1.0,0.9,1.0,1770.0031,0.000121792

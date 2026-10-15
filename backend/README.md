@@ -65,7 +65,7 @@ The response contains an answer and the model used. Raw input/output token count
 
 The Python `pgvector` dependency provides SQLAlchemy support; the PostgreSQL server extension provides the `vector` type used by document chunks.
 
-Set `OPENAI_EMBEDDING_MODEL` in `.env` to an OpenAI `text-embedding-3` model. The default is `text-embedding-3-small`; OpsMind requests 1536 dimensions to match the `vector(1536)` column. Embedding calls occur only when a document is uploaded. Tests mock those calls.
+Set `OPENAI_EMBEDDING_MODEL` in `.env` to an OpenAI `text-embedding-3` model. The default is `text-embedding-3-small`; OpsMind requests 1536 dimensions to match the `vector(1536)` column. Embedding calls occur during document uploads and RAG questions. Tests mock those calls.
 
 Run or upgrade the database schema from `backend/`:
 
@@ -97,6 +97,10 @@ curl -X POST http://127.0.0.1:8000/rag/chat \
 
 The response contains `answer` and a `sources` list with database-derived `document_id`, `filename`, `page_number`, `section_title`, `chunk_index`, and `distance`. The answer is instructed to cite source numbers such as `[1]`; these numbers refer to the order of the returned sources. If no chunks are found, the endpoint returns an insufficient-evidence answer with an empty `sources` list. The question and retrieved chunk text are sent to the configured OpenAI API when an answer is generated.
 
+Run `alembic upgrade head` before using RAG usage tracking. Each RAG request gets one UUID `request_id`; its query embedding and generated answer each write an `ai_usage_events` row with that ID. Rows record the provider model, available token counts, call latency, and success status. Embeddings have zero output tokens. Existing usage rows are labeled `llm` by the migration and keep a null `request_id`.
+
+New `/chat` and RAG usage rows also store an estimated USD cost based on the recorded model and token counts. Prices checked **2026-10-13** against the official OpenAI model pages: [`gpt-6-luna`](https://developers.openai.com/api/docs/models/gpt-6-luna) costs **$0.10 per 1M input tokens** and **$0.50 per 1M output tokens**; [`text-embedding-3-small`](https://developers.openai.com/api/docs/models/text-embedding-3-small) costs **$0.02 per 1M input tokens**. The formula is `input_tokens / 1,000,000 * input_price + output_tokens / 1,000,000 * output_price` for LLM calls, and the input term alone for embeddings. Estimates use uncached, short-context Standard prices; actual charges can differ for cached tokens, long context, other processing tiers, or regional premiums. Unknown model prices and failed calls without token usage leave `estimated_cost` null. Existing rows are not recalculated; model and raw token counts remain the source of truth.
+
 ## Retrieval evaluation
 
 `evals/questions.json` contains fictional example cases. Replace the sample document IDs, questions, expected facts, and section titles with cases for PDFs in your own database before calculating a meaningful score. Each case needs an `id`, `question`, `expected_document_id`, `expected_fact`, `expected_section`, and `category`.
@@ -107,6 +111,8 @@ From `backend/`, with `.env` sourced and the database available, run:
 python -m evals.run --questions evals/questions.json --output evals/results.json
 ```
 
+Use `--top-k 3`, `--top-k 5`, or `--top-k 10` to compare retrieval depth. Evaluation passes this value to pgvector retrieval and saves it with Recall@1, Recall@k, Section@1, FactMatch, average RAG latency, and average estimated AI cost per request in `evals/results.json`. The API endpoint `/rag/chat` still retrieves five chunks. Each evaluation case gets a request ID and records its embedding and answer usage events. RAG latency covers embedding, retrieval, answer generation, and usage recording; optional judge calls are excluded from latency and cost. If a case has no usage events or an unknown model price, the average estimated cost is `null` rather than treating it as zero.
+
 Add `--llm-judge` to make one additional OpenAI grading call per case:
 
 ```bash
@@ -114,6 +120,34 @@ python -m evals.run --questions evals/questions.json --output evals/results.json
 ```
 
 For each case, the script runs the existing RAG answer flow, prints per-question Recall@1, Recall@5, Section@1, and FactMatch results, and saves ranked source details plus the generated answer to `evals/results.json`. Recall@1 is the fraction of questions whose expected document is the first result; Recall@5 is the fraction where it appears among the five closest chunks; Section@1 is the fraction whose first result has the expected section title. FactMatch is the fraction of generated answers containing the expected fact after lowercasing and normalizing punctuation and whitespace. The optional `--llm-judge` receives the question, expected fact, answer, and retrieved chunk text with source metadata. It accepts supported extra details and paraphrases, but marks unsupported or contradictory material claims and missing required facts incorrect. It reports LLMJudge accuracy and saves each `correct` result with a short reason. Running the script makes embedding and answer-generation API calls; the optional judge adds one grading call per case. The automated tests mock embeddings, retrieval, answer generation, and judge results.
+
+## AI FinOps / RAG benchmark
+
+The saved benchmark compares three retrieval depths using the same 10 synthetic questions and 4 synthetic documents. These are measured averages from one run per setting; the latency values below are in milliseconds and the costs are estimated AI API USD per RAG request.
+
+| top_k | Recall@1 | Recall@k | Section@1 | FactMatch | LLM judge | Avg RAG latency (ms) | Est. AI API cost/request (USD) |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 3 | 100% | 100% | 100% | 80% | 100% | 1725.6537625 | $0.000053582 |
+| 5 | 100% | 100% | 100% | 90% | 100% | 1659.8823541999998 | $0.000075662 |
+| 10 | 100% | 100% | 100% | 90% | 100% | 1770.0031 | $0.000121792 |
+
+Monthly examples multiply each measured average estimated AI API cost/request by the request count. They are projections, not additional measurements:
+
+| top_k | 1,000 requests | 10,000 requests | 100,000 requests | 500,000 requests |
+| ---: | ---: | ---: | ---: | ---: |
+| 3 | $0.053582 | $0.53582 | $5.3582 | $26.791 |
+| 5 | $0.075662 | $0.75662 | $7.5662 | $37.831 |
+| 10 | $0.121792 | $1.21792 | $12.1792 | $60.896 |
+
+Keep `top_k=5` for `/rag/chat`: it matched `top_k=10` on the measured quality metrics, improved FactMatch over `top_k=3`, and had lower measured latency and estimated AI API cost than `top_k=10`. These costs exclude infrastructure and the optional LLM-judge evaluation calls. The benchmark is limited to 10 synthetic questions, 4 synthetic documents, and a single run, so the result is a starting point rather than a general performance guarantee.
+
+![Estimated AI API cost per RAG request by top_k](benchmarks/results/cost_vs_top_k.png)
+
+![Average RAG latency by top_k](benchmarks/results/latency_vs_top_k.png)
+
+![Retrieval and answer quality by top_k](benchmarks/results/quality_vs_top_k.png)
+
+Detailed results: [benchmark report](benchmarks/results/report.md), [summary CSV](benchmarks/results/summary.csv), and [monthly API projection CSV](benchmarks/results/monthly_api_projection.csv).
 
 To run the automated tests, install the development requirements and run pytest:
 

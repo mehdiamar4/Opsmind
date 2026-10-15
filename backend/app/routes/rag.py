@@ -1,10 +1,13 @@
+from functools import partial
 from typing import Optional
+from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from sqlalchemy.exc import SQLAlchemyError
 
 from app.rag import RAGConfigurationError, answer_question
+from app.usage import UsageRecordingError, record_usage_event
 
 
 router = APIRouter()
@@ -31,10 +34,17 @@ class RAGChatResponse(BaseModel):
 
 @router.post("/rag/chat", response_model=RAGChatResponse)
 def rag_chat(request: RAGChatRequest) -> RAGChatResponse:
+    request_id = uuid4()
     try:
-        result = answer_question(request.question, document_id=request.document_id)
+        result = answer_question(
+            request.question,
+            document_id=request.document_id,
+            usage_recorder=partial(record_usage_event, request_id=request_id),
+        )
     except RAGConfigurationError:
         raise HTTPException(status_code=503, detail="RAG service is not configured.") from None
+    except UsageRecordingError:
+        raise HTTPException(status_code=503, detail="Usage metrics could not be recorded.") from None
     except SQLAlchemyError:
         raise HTTPException(status_code=503, detail="Document retrieval is unavailable.") from None
     except Exception:

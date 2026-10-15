@@ -1,6 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 from typing import Optional
+from uuid import UUID
 
 from sqlalchemy import (
     BigInteger,
@@ -15,6 +16,7 @@ from sqlalchemy import (
     String,
     Text,
     UniqueConstraint,
+    Uuid,
     func,
 )
 from sqlalchemy.orm import Mapped, mapped_column
@@ -85,8 +87,19 @@ class DocumentChunk(Base):
 
 class AIUsageEvent(Base):
     __tablename__ = "ai_usage_events"
+    __table_args__ = (
+        CheckConstraint(
+            "event_type IN ('llm', 'embedding')",
+            name="ck_ai_usage_events_event_type",
+        ),
+        Index("ix_ai_usage_events_request_id", "request_id"),
+    )
 
     id: Mapped[int] = mapped_column(BigInteger, Identity(), primary_key=True)
+    event_type: Mapped[str] = mapped_column(
+        String(16), nullable=False, server_default="llm"
+    )
+    request_id: Mapped[Optional[UUID]] = mapped_column(Uuid(as_uuid=True), nullable=True)
     model: Mapped[str] = mapped_column(String(255), nullable=False)
     input_tokens: Mapped[int] = mapped_column(Integer, nullable=False)
     output_tokens: Mapped[int] = mapped_column(Integer, nullable=False)

@@ -1,0 +1,509 @@
+{
+  "top_k": 3,
+  "metric": "Recall@3",
+  "recall_at_1": 1.0,
+  "recall_at_k": 1.0,
+  "section_at_1": 1.0,
+  "fact_match": 0.8,
+  "average_rag_latency_ms": 1725.6537625,
+  "average_estimated_ai_cost_per_request": 5.3582e-05,
+  "hits_at_1": 10,
+  "hits": 10,
+  "section_hits_at_1": 10,
+  "fact_matches": 8,
+  "total": 10,
+  "results": [
+    {
+      "id": "hr-vacation-days",
+      "question": "How many paid vacation days do full-time employees receive per year?",
+      "expected_document_id": 3,
+      "expected_fact": "30 paid vacation days per calendar year",
+      "category": "factual",
+      "expected_section": "2. Annual Leave",
+      "answer": "Full-time employees receive 30 paid vacation days per calendar year, based on a five-day work week. [1]",
+      "request_id": "ae3d7372-c6fe-4ac5-82fb-f1522b34df5e",
+      "rag_latency_ms": 2007.7684160000001,
+      "estimated_ai_cost": 5.716e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Annual Leave",
+          "chunk_index": 3,
+          "distance": 0.2864673425052091
+        },
+        {
+          "rank": 2,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "6. Items Not Covered",
+          "chunk_index": 7,
+          "distance": 0.6573692525031908
+        },
+        {
+          "rank": 3,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. Purpose",
+          "chunk_index": 2,
+          "distance": 0.674000595620585
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer correctly states that full-time employees receive 30 paid vacation days per calendar year, based on a five-day work week, matching the retrieved policy."
+      }
+    },
+    {
+      "id": "hr-security-training",
+      "question": "How soon must new employees complete security awareness training?",
+      "expected_document_id": 3,
+      "expected_fact": "Within the first 7 calendar days",
+      "category": "factual",
+      "expected_section": "4. Onboarding",
+      "answer": "New employees must complete security awareness training within the first 7 calendar days [1].",
+      "request_id": "389b2c61-0a33-4dd3-944b-5af3d7e14e01",
+      "rag_latency_ms": 1851.0482920000006,
+      "estimated_ai_cost": 5.29e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Onboarding",
+          "chunk_index": 5,
+          "distance": 0.35101827173166644
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.6343788545955711
+        },
+        {
+          "rank": 3,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - HR Leave and Onboarding",
+          "chunk_index": 0,
+          "distance": 0.6521041772007417
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer correctly states that training must be completed within the first 7 calendar days, as supported by the onboarding policy."
+      }
+    },
+    {
+      "id": "hr-probation",
+      "question": "What is the standard probation period?",
+      "expected_document_id": 3,
+      "expected_fact": "Six months",
+      "category": "factual",
+      "expected_section": "5. Probation and Notice",
+      "answer": "The standard probation period is six months. [1]",
+      "request_id": "9dd551df-fdb7-4f05-81c4-6666a7579cab",
+      "rag_latency_ms": 1990.9498330000001,
+      "estimated_ai_cost": 4.844e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Probation and Notice",
+          "chunk_index": 6,
+          "distance": 0.2740566104107486
+        },
+        {
+          "rank": 2,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. Purpose",
+          "chunk_index": 2,
+          "distance": 0.6724528518957404
+        },
+        {
+          "rank": 3,
+          "document_id": 3,
+          "filename": "01_HR_Leave_and_Onboarding_Policy.pdf",
+          "page_number": 1,
+          "section_title": "4. Onboarding",
+          "chunk_index": 5,
+          "distance": 0.7426945096604809
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer states that the standard probation period is six months, matching the retrieved policy and expected fact."
+      }
+    },
+    {
+      "id": "it-p1-response",
+      "question": "What is the target acknowledgement time for a P1 incident?",
+      "expected_document_id": 4,
+      "expected_fact": "10 minutes",
+      "category": "factual",
+      "expected_section": "2. Initial Response Targets",
+      "answer": "The target acknowledgement time for a P1 incident is **10 minutes**. [1]",
+      "request_id": "1981952d-ff90-4dad-950a-d8f69a92e015",
+      "rag_latency_ms": 1527.1553339999996,
+      "estimated_ai_cost": 5.304e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.21770898080212953
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.45759418332013624
+        },
+        {
+          "rank": 3,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.4768978383216109
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer gives the target acknowledgement time as 10 minutes, which matches the retrieved context and expected fact."
+      }
+    },
+    {
+      "id": "it-error-e47",
+      "question": "What is the most common cause of error E47?",
+      "expected_document_id": 4,
+      "expected_fact": "Blocked airflow around the rear cooling intake",
+      "category": "factual",
+      "expected_section": "4. Error E47 - Cooling Failure",
+      "answer": "The most common cause of error E47 is blocked airflow around the appliance’s rear cooling intake. [1]",
+      "request_id": "3149f040-6501-41a9-8393-9f2b747a698d",
+      "rag_latency_ms": 1337.3503329999999,
+      "estimated_ai_cost": 6.062e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": false,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "4. Error E47 - Cooling Failure",
+          "chunk_index": 4,
+          "distance": 0.37311738341829503
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "3. Database Connection Saturation",
+          "chunk_index": 3,
+          "distance": 0.7107252855028543
+        },
+        {
+          "rank": 3,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.7436727714552749
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer correctly identifies blocked airflow around the rear cooling intake as the most common cause of E47, matching the retrieved context."
+      }
+    },
+    {
+      "id": "it-p1-updates",
+      "question": "How often must the status channel be updated during a P1 incident?",
+      "expected_document_id": 4,
+      "expected_fact": "At least every 30 minutes",
+      "category": "factual",
+      "expected_section": "5. Communication",
+      "answer": "The status channel must be updated at least every 30 minutes, even when there is no material change. [1]",
+      "request_id": "159bd24c-f8e8-4623-b2da-fdaac4356e84",
+      "rag_latency_ms": 1884.8727919999994,
+      "estimated_ai_cost": 5.628e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "5. Communication",
+          "chunk_index": 5,
+          "distance": 0.23084260332682105
+        },
+        {
+          "rank": 2,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "2. Initial Response Targets",
+          "chunk_index": 2,
+          "distance": 0.4244249505762735
+        },
+        {
+          "rank": 3,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.44214994131401963
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer matches the context: P1 status updates are required at least every 30 minutes, even when there is no material change."
+      }
+    },
+    {
+      "id": "finance-hotel-limit",
+      "question": "What is the standard hotel guideline for domestic travel in Germany?",
+      "expected_document_id": 5,
+      "expected_fact": "Up to EUR 160 per night excluding breakfast",
+      "category": "factual",
+      "expected_section": "3. Hotels",
+      "answer": "The standard guideline is up to **EUR 160 per night, excluding breakfast**. [1]",
+      "request_id": "bc743b7c-e0f1-48e4-9487-535f7cf83ad3",
+      "rag_latency_ms": 1572.1781670000005,
+      "estimated_ai_cost": 4.794e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "3. Hotels",
+          "chunk_index": 3,
+          "distance": 0.22291425277565802
+        },
+        {
+          "rank": 2,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "2. Travel Booking",
+          "chunk_index": 2,
+          "distance": 0.6639859455323733
+        },
+        {
+          "rank": 3,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - Travel and Expense Policy",
+          "chunk_index": 0,
+          "distance": 0.7181297446733026
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer accurately states the standard guideline of up to EUR 160 per night, excluding breakfast, as supported by the retrieved context."
+      }
+    },
+    {
+      "id": "finance-receipt",
+      "question": "From what amount is a receipt required for an individual expense?",
+      "expected_document_id": 5,
+      "expected_fact": "EUR 25 or more",
+      "category": "factual",
+      "expected_section": "5. Receipts and Approval",
+      "answer": "A receipt is required for individual expenses of EUR 25 or more. [1]",
+      "request_id": "3232a34d-fd03-40cf-a89e-abea3a259b31",
+      "rag_latency_ms": 2086.2792500000005,
+      "estimated_ai_cost": 4.674e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "5. Receipts and Approval",
+          "chunk_index": 5,
+          "distance": 0.3418000969091861
+        },
+        {
+          "rank": 2,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "1. General Principles",
+          "chunk_index": 1,
+          "distance": 0.5489436070551297
+        },
+        {
+          "rank": 3,
+          "document_id": 5,
+          "filename": "03_Finance_Travel_and_Expense_Policy.pdf",
+          "page_number": 1,
+          "section_title": "Northstar Systems - Travel and Expense Policy",
+          "chunk_index": 0,
+          "distance": 0.6274785822113864
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer accurately states that a receipt is required for individual expenses of EUR 25 or more, matching the retrieved policy."
+      }
+    },
+    {
+      "id": "cloud-cutover",
+      "question": "What is the preferred production cutover window for low-weekend-usage applications?",
+      "expected_document_id": 6,
+      "expected_fact": "Saturday between 22:00 and 02:00 local time",
+      "category": "factual",
+      "expected_section": "4. Production Cutover",
+      "answer": "Saturday between 22:00 and 02:00 local time, unless the business owner approves another window. [1]",
+      "request_id": "23a79d93-b7e3-4bf8-a7d7-191e499ae63a",
+      "rag_latency_ms": 1727.7127079999987,
+      "estimated_ai_cost": 5.584e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": true,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.2960894170217636
+        },
+        {
+          "rank": 2,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "6. Post-Migration Verification",
+          "chunk_index": 6,
+          "distance": 0.5906602968464629
+        },
+        {
+          "rank": 3,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.6360447883562964
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "It gives the preferred Saturday 22:00–02:00 local-time window and the exception for another window approved by the business owner, as supported by the context."
+      }
+    },
+    {
+      "id": "cloud-rollback",
+      "question": "When should rollback be initiated if a critical business function is unavailable?",
+      "expected_document_id": 6,
+      "expected_fact": "If it is unavailable for more than 20 minutes and no safe workaround exists",
+      "category": "factual",
+      "expected_section": "5. Rollback Criteria",
+      "answer": "Initiate rollback if a critical business function is unavailable for more than 20 minutes and no safe workaround exists. [1]",
+      "request_id": "d6c53735-8cd8-4e61-9292-12d3c8067f65",
+      "rag_latency_ms": 1271.2225000000003,
+      "estimated_ai_cost": 5.686e-05,
+      "hit": true,
+      "hit_at_1": true,
+      "section_at_1": true,
+      "fact_match": false,
+      "retrieved_sources": [
+        {
+          "rank": 1,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "5. Rollback Criteria",
+          "chunk_index": 5,
+          "distance": 0.20963008773095604
+        },
+        {
+          "rank": 2,
+          "document_id": 6,
+          "filename": "04_Cloud_Migration_Runbook.pdf",
+          "page_number": 1,
+          "section_title": "4. Production Cutover",
+          "chunk_index": 4,
+          "distance": 0.542701353513016
+        },
+        {
+          "rank": 3,
+          "document_id": 4,
+          "filename": "02_IT_Operations_Incident_Manual.pdf",
+          "page_number": 1,
+          "section_title": "1. Incident Priorities",
+          "chunk_index": 1,
+          "distance": 0.6051126254216402
+        }
+      ],
+      "llm_judge": {
+        "correct": true,
+        "reason": "The answer matches the stated rollback trigger: the function is unavailable for more than 20 minutes and no safe workaround exists."
+      }
+    }
+  ],
+  "llm_judge_correct": 10,
+  "llm_judge_accuracy": 1.0
+}

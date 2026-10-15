@@ -1,6 +1,8 @@
 import os
 from types import SimpleNamespace
+from uuid import UUID
 
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy.dialects import postgresql
 
@@ -12,6 +14,7 @@ from app import main, rag
 from app.main import app
 from app.rag import RAGResult
 from app.retrieval import RetrievedChunk, retrieve_top_chunks
+from app.routes import rag as rag_route
 
 
 class FakeRetrievalSession:
@@ -98,7 +101,23 @@ def test_rag_endpoint_returns_answer_and_database_sources(monkeypatch) -> None:
             distance=0.19,
         ),
     ]
-    monkeypatch.setattr(rag, "create_embeddings", lambda texts: [[0.25] * 1536])
+    usage_events = []
+    monkeypatch.setattr(
+        rag_route, "record_usage_event", lambda **event: usage_events.append(event)
+    )
+
+    def fake_embedder(texts, *, on_usage=None):
+        on_usage(
+            event_type="embedding",
+            model="text-embedding-3-small",
+            input_tokens=8,
+            output_tokens=0,
+            latency_ms=12,
+            request_success=True,
+        )
+        return [[0.25] * 1536]
+
+    monkeypatch.setattr(rag, "create_embeddings", fake_embedder)
     received_document_ids = []
 
     def fake_retriever(vector, *, document_id=None):
@@ -107,11 +126,19 @@ def test_rag_endpoint_returns_answer_and_database_sources(monkeypatch) -> None:
 
     monkeypatch.setattr(rag, "retrieve_top_chunks", fake_retriever)
 
-    def fake_answerer(question, context):
+    def fake_answerer(question, context, *, on_usage=None):
         assert question == "Who approves access?"
         assert "[1] filename=policy.pdf" in context
         assert "[2] filename=handbook.pdf" in context
         assert "distance=0.120000" in context
+        on_usage(
+            event_type="llm",
+            model="test-model",
+            input_tokens=100,
+            output_tokens=15,
+            latency_ms=45,
+            request_success=True,
+        )
         return "Employees need approval [1], and managers review requests [2]."
 
     monkeypatch.setattr(rag, "_generate_grounded_answer", fake_answerer)
@@ -145,6 +172,13 @@ def test_rag_endpoint_returns_answer_and_database_sources(monkeypatch) -> None:
             },
         ],
     }
+    assert [event["event_type"] for event in usage_events] == ["embedding", "llm"]
+    assert usage_events[0]["request_id"] == usage_events[1]["request_id"]
+    assert isinstance(usage_events[0]["request_id"], UUID)
+    assert [(event["input_tokens"], event["output_tokens"]) for event in usage_events] == [
+        (8, 0),
+        (100, 15),
+    ]
 
 
 def test_rag_without_chunks_returns_safe_answer_without_calling_llm() -> None:
@@ -165,11 +199,16 @@ def test_rag_without_chunks_returns_safe_answer_without_calling_llm() -> None:
 
 def test_grounded_llm_prompt_requires_evidence_and_numbered_citations(monkeypatch) -> None:
     captured = {}
+    usage_events = []
 
     class FakeResponses:
         def create(self, **kwargs):
             captured.update(kwargs)
-            return SimpleNamespace(output_text="Answer [1].")
+            return SimpleNamespace(
+                output_text="Answer [1].",
+                model="returned-model",
+                usage=SimpleNamespace(input_tokens=20, output_tokens=5),
+            )
 
     monkeypatch.setenv("OPENAI_API_KEY", "test-key")
     monkeypatch.setenv("OPENAI_MODEL", "test-model")
@@ -179,7 +218,9 @@ def test_grounded_llm_prompt_requires_evidence_and_numbered_citations(monkeypatc
         lambda **kwargs: SimpleNamespace(responses=FakeResponses()),
     )
 
-    answer = rag._generate_grounded_answer("Question?", "[1] Evidence")
+    answer = rag._generate_grounded_answer(
+        "Question?", "[1] Evidence", on_usage=lambda **event: usage_events.append(event)
+    )
 
     assert answer == "Answer [1]."
     assert captured["model"] == "test-model"
@@ -187,6 +228,37 @@ def test_grounded_llm_prompt_requires_evidence_and_numbered_citations(monkeypatc
     assert "evidence is insufficient" in captured["instructions"]
     assert "[1]" in captured["instructions"]
     assert captured["store"] is False
+    assert len(usage_events) == 1
+    assert usage_events[0]["event_type"] == "llm"
+    assert usage_events[0]["model"] == "returned-model"
+    assert usage_events[0]["input_tokens"] == 20
+    assert usage_events[0]["output_tokens"] == 5
+    assert usage_events[0]["request_success"] is True
+    assert usage_events[0]["latency_ms"] >= 0
+
+
+def test_grounded_llm_failure_records_failed_usage(monkeypatch) -> None:
+    usage_events = []
+
+    class FailingResponses:
+        def create(self, **kwargs):
+            raise RuntimeError("provider failed")
+
+    monkeypatch.setenv("OPENAI_API_KEY", "test-key")
+    monkeypatch.setenv("OPENAI_MODEL", "test-model")
+    monkeypatch.setattr(
+        rag, "OpenAI", lambda **kwargs: SimpleNamespace(responses=FailingResponses())
+    )
+
+    with pytest.raises(RuntimeError, match="provider failed"):
+        rag._generate_grounded_answer(
+            "Question?", "[1] Evidence", on_usage=lambda **event: usage_events.append(event)
+        )
+
+    assert len(usage_events) == 1
+    assert usage_events[0]["event_type"] == "llm"
+    assert usage_events[0]["model"] == "test-model"
+    assert usage_events[0]["request_success"] is False
 
 
 def test_existing_chat_still_works(monkeypatch) -> None:

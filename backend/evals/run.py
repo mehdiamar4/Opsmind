@@ -4,14 +4,18 @@ import argparse
 import json
 import os
 import re
+from decimal import Decimal
 from pathlib import Path
+from time import perf_counter
 from typing import Callable, Optional, Sequence
+from uuid import uuid4
 
 from openai import OpenAI
 
-from app.embeddings import create_embeddings
+from app.pricing import estimate_cost
 from app.rag import RAGResult, answer_question, build_context
 from app.retrieval import TOP_K, RetrievedChunk, retrieve_top_chunks
+from app.usage import record_usage_event
 
 
 DEFAULT_QUESTIONS = Path(__file__).with_name("questions.json")
@@ -130,24 +134,53 @@ def judge_answer(
 def evaluate_cases(
     cases: list[dict],
     *,
-    embedder: Callable[[Sequence[str]], list[list[float]]] = create_embeddings,
+    top_k: int = TOP_K,
+    embedder: Optional[Callable[[Sequence[str]], list[list[float]]]] = None,
     retriever: Callable[..., list[RetrievedChunk]] = retrieve_top_chunks,
     answerer: Optional[Callable[[str, str], str]] = None,
     answer_flow: Callable[..., RAGResult] = answer_question,
     judge: Optional[Callable[[str, str, str, str], dict]] = None,
+    usage_persister: Callable[..., None] = record_usage_event,
 ) -> dict:
     if not cases:
         raise ValueError("At least one question is required")
+    if top_k < 1:
+        raise ValueError("top_k must be positive")
 
     results = []
+    request_costs = []
     for case in cases:
+        request_id = uuid4()
+        event_costs = []
+
+        def track_usage(**event) -> None:
+            usage_persister(request_id=request_id, **event)
+            event_costs.append(
+                estimate_cost(
+                    event_type=event["event_type"],
+                    model=event["model"],
+                    input_tokens=event["input_tokens"],
+                    output_tokens=event["output_tokens"],
+                    request_success=event["request_success"],
+                )
+            )
+
+        started_at = perf_counter()
         rag_result = answer_flow(
             case["question"],
             embedder=embedder,
-            retriever=lambda vector: retriever(vector, top_k=TOP_K)[:TOP_K],
+            retriever=lambda vector: retriever(vector, top_k=top_k)[:top_k],
             answerer=answerer,
+            usage_recorder=track_usage,
         )
-        chunks = rag_result.sources[:TOP_K]
+        rag_latency_ms = (perf_counter() - started_at) * 1000
+        estimated_cost = (
+            sum(event_costs, Decimal("0"))
+            if event_costs and all(cost is not None for cost in event_costs)
+            else None
+        )
+        request_costs.append(estimated_cost)
+        chunks = rag_result.sources[:top_k]
         sources = [
             {
                 "rank": rank,
@@ -184,6 +217,11 @@ def evaluate_cases(
             {
                 **case,
                 "answer": rag_result.answer,
+                "request_id": str(request_id),
+                "rag_latency_ms": rag_latency_ms,
+                "estimated_ai_cost": (
+                    float(estimated_cost) if estimated_cost is not None else None
+                ),
                 "hit": hit,
                 "hit_at_1": hit_at_1,
                 "section_at_1": section_at_1,
@@ -198,11 +236,20 @@ def evaluate_cases(
     section_hits_at_1 = sum(result["section_at_1"] for result in results)
     fact_matches = sum(result["fact_match"] for result in results)
     report = {
-        "metric": f"Recall@{TOP_K}",
+        "top_k": top_k,
+        "metric": f"Recall@{top_k}",
         "recall_at_1": hits_at_1 / len(results),
-        "recall_at_5": hits / len(results),
+        "recall_at_k": hits / len(results),
         "section_at_1": section_hits_at_1 / len(results),
         "fact_match": fact_matches / len(results),
+        "average_rag_latency_ms": sum(
+            result["rag_latency_ms"] for result in results
+        ) / len(results),
+        "average_estimated_ai_cost_per_request": (
+            float(sum(request_costs, Decimal("0")) / len(results))
+            if all(cost is not None for cost in request_costs)
+            else None
+        ),
         "hits_at_1": hits_at_1,
         "hits": hits,
         "section_hits_at_1": section_hits_at_1,
@@ -210,6 +257,8 @@ def evaluate_cases(
         "total": len(results),
         "results": results,
     }
+    if top_k == 5:
+        report["recall_at_5"] = report["recall_at_k"]
     if judge is not None:
         judged_correct = sum(
             result["llm_judge"]["correct"] for result in results
@@ -230,20 +279,25 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--questions", type=Path, default=DEFAULT_QUESTIONS)
     parser.add_argument("--output", type=Path, default=DEFAULT_OUTPUT)
+    parser.add_argument("--top-k", type=int, default=TOP_K)
     parser.add_argument(
         "--llm-judge",
         action="store_true",
         help="Use the configured OpenAI model to grade answer correctness",
     )
     args = parser.parse_args()
+    if args.top_k < 1:
+        parser.error("--top-k must be positive")
 
     report = evaluate_cases(
-        load_cases(args.questions), judge=judge_answer if args.llm_judge else None
+        load_cases(args.questions),
+        top_k=args.top_k,
+        judge=judge_answer if args.llm_judge else None,
     )
     for result in report["results"]:
         retrieved_ids = [source["document_id"] for source in result["retrieved_sources"]]
         label_at_1 = "HIT" if result["hit_at_1"] else "MISS"
-        label_at_5 = "HIT" if result["hit"] else "MISS"
+        label_at_k = "HIT" if result["hit"] else "MISS"
         label_section_at_1 = "HIT" if result["section_at_1"] else "MISS"
         label_fact_match = "HIT" if result["fact_match"] else "MISS"
         judge_label = (
@@ -252,7 +306,7 @@ def main() -> None:
             else ""
         )
         print(
-            f"{result['id']}: Recall@1={label_at_1} Recall@5={label_at_5} "
+            f"{result['id']}: Recall@1={label_at_1} Recall@{args.top_k}={label_at_k} "
             f"Section@1={label_section_at_1} FactMatch={label_fact_match} "
             f"expected={result['expected_document_id']} retrieved={retrieved_ids}"
             f"{judge_label}"
@@ -262,8 +316,8 @@ def main() -> None:
         f"({report['recall_at_1']:.1%})"
     )
     print(
-        f"Recall@{TOP_K}: {report['hits']}/{report['total']} "
-        f"({report['recall_at_5']:.1%})"
+        f"Recall@{args.top_k}: {report['hits']}/{report['total']} "
+        f"({report['recall_at_k']:.1%})"
     )
     print(
         f"Section@1: {report['section_hits_at_1']}/{report['total']} "
@@ -278,6 +332,10 @@ def main() -> None:
             f"LLMJudge accuracy: {report['llm_judge_correct']}/{report['total']} "
             f"({report['llm_judge_accuracy']:.1%})"
         )
+    print(f"Average RAG latency: {report['average_rag_latency_ms']:.1f} ms")
+    cost = report["average_estimated_ai_cost_per_request"]
+    print(f"Average estimated AI cost/request: ${cost:.8f}" if cost is not None
+          else "Average estimated AI cost/request: unavailable")
     save_report(report, args.output)
     print(f"Detailed results: {args.output}")
 
